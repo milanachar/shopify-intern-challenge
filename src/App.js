@@ -1,9 +1,13 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Container, Row, Form, Button, Table } from 'react-bootstrap';
 
 function App() {
   const [prompt, setPrompt] = useState('');
-  const [responses, setResponses] = useState([]);
+  const [responses, setResponses] = useState(JSON.parse(localStorage.getItem('response')));
+
+  useEffect(() => {
+    localStorage.setItem('response', JSON.stringify(responses));
+  }, [responses]);
 
   const handleSubmit = event => {
     event.preventDefault();
