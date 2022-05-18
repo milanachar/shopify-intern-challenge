@@ -3,7 +3,8 @@ import { Container, Row, Form, Button, Table } from 'react-bootstrap';
 
 function App() {
   const [prompt, setPrompt] = useState('');
-  const [responses, setResponses] = useState(localStorage.getItem('response') ? JSON.parse(localStorage.getItem('response')): []);
+  const [responses, setResponses] = useState(localStorage.getItem('response') ? JSON.parse(localStorage.getItem('response')) : []);
+  const [engine, setEngine] = useState('text-curie-001');
 
   useEffect(() => {
     localStorage.setItem('response', JSON.stringify(responses));
@@ -17,7 +18,7 @@ function App() {
       max_tokens: 64
     };
 
-    fetch("https://api.openai.com/v1/engines/text-curie-001/completions", {
+    fetch(`https://api.openai.com/v1/engines/${engine}/completions`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -27,7 +28,9 @@ function App() {
     }).then(response => {
       return response.json();
     }).then(jsonResponse => {
-      setResponses([{ prompt: prompt, response: jsonResponse.choices[0].text }, ...responses]);
+      setResponses([{ prompt: prompt, response: jsonResponse.choices[0].text, id:jsonResponse.id }, ...responses]);
+    }).catch(error => {
+      console.log(error);
     });
   }
 
@@ -40,6 +43,16 @@ function App() {
           <Form onSubmit={handleSubmit}>
             <Form.Group className="mb-3">
               <Form.Control as="textarea" placeholder="Enter a prompt. For example: 'Who is Chuck Norris?'" onChange={(e) => setPrompt(e.target.value)} />
+            </Form.Group>
+
+            <Form.Group className="mb-3">
+              <Form.Label style={{ fontWeight: 'bold' }}>AI Engine</Form.Label>
+              <Form.Select onChange={(e) => setEngine(e.target.value)}>
+                <option value="text-curie-001">Curie</option>
+                <option value="text-davinci-002">Da Vinci</option>
+                <option value="text-babbage-001">Babbage</option>
+                <option value="text-ada-001">Ada</option>
+              </Form.Select>
             </Form.Group>
 
             <Button variant="primary" type="submit">
@@ -62,7 +75,7 @@ function App() {
               </thead>
               <tbody>
                 {responses.map((response) => (
-                  <tr>
+                  <tr key={response['id']}>
                     <td>{response['prompt']}</td>
                     <td>{response['response']}</td>
                   </tr>
