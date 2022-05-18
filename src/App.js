@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Container, Row, Form, Button } from 'react-bootstrap';
+import { Container, Row, Form, Button, Table } from 'react-bootstrap';
 
 function App() {
   const [prompt, setPrompt] = useState('');
@@ -10,11 +10,7 @@ function App() {
 
     const params = {
       prompt: prompt,
-      temperature: 0.5,
-      max_tokens: 64,
-      top_p: 1.0,
-      frequency_penalty: 0.0,
-      presence_penalty: 0.0
+      max_tokens: 64
     };
 
     fetch("https://api.openai.com/v1/engines/text-curie-001/completions", {
@@ -27,19 +23,19 @@ function App() {
     }).then(response => {
       return response.json();
     }).then(jsonResponse => {
-      console.log(jsonResponse.choices[0].text);
+      setResponses([{ prompt: prompt, response: jsonResponse.choices[0].text }, ...responses]);
     });
   }
 
   return (
     <div className="App">
       <Container>
+        <br />
         <Row>
-          <h1>OpenAI Prompts</h1>
+          <h1>Wise Guy - AI</h1>
           <Form onSubmit={handleSubmit}>
             <Form.Group className="mb-3">
-              <Form.Label>Enter Prompt</Form.Label>
-              <Form.Control as="textarea" placeholder="Enter prompt here" onChange={(e) => setPrompt(e.target.value)} />
+              <Form.Control as="textarea" placeholder="Enter a prompt. For example: 'Who is Chuck Norris?'" onChange={(e) => setPrompt(e.target.value)} />
             </Form.Group>
 
             <Button variant="primary" type="submit">
@@ -47,8 +43,29 @@ function App() {
             </Button>
           </Form>
         </Row>
+        <br />
         <Row>
-
+          <h2>Responses</h2>
+          {(responses.length < 1) ?
+            <p>There are no responses yet.</p>
+            :
+            <Table striped bordered>
+              <thead>
+                <tr>
+                  <th>Prompt</th>
+                  <th>Response</th>
+                </tr>
+              </thead>
+              <tbody>
+                {responses.map((response) => (
+                  <tr>
+                    <td>{response['prompt']}</td>
+                    <td>{response['response']}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </Table>
+          }
         </Row>
       </Container>
     </div>
