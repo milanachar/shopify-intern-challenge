@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/shopify-intern-challenge/static/css/main.e7720ab7.css",
+    "main.js": "/shopify-intern-challenge/static/js/main.a05996ac.js",
+    "index.html": "/shopify-intern-challenge/index.html",
+    "main.e7720ab7.css.map": "/shopify-intern-challenge/static/css/main.e7720ab7.css.map",
+    "main.a05996ac.js.map": "/shopify-intern-challenge/static/js/main.a05996ac.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.e7720ab7.css",
+    "static/js/main.a05996ac.js"
+  ]
+}
